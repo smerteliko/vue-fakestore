@@ -6,7 +6,7 @@
     <div class="container-fluid">
       <div class="navbar-brand  align-content-start me-lg-5">
         <RouterLink
-          class="nav-link  link-primary"
+          class="nav-link  link-primary "
           to="/"
         >
           <h3 class="text-lg-center mb-lg-0 ">
@@ -74,7 +74,6 @@
                     :key="`header-category-`+categ.Name+`-subcategory-`+subCat.Name"
                     :to="{name: 'CategoryCompBuSub', params:{catID: categ.id, subID:subCat.id}}"
                     class="nav-link"
-                    replace
                   >
                     <h6 class="">
                       {{ subCat.Name }}
@@ -207,7 +206,7 @@ export default {
             return ''
         },
         getImage() {
-          return require('../../../img/uploads/'+this.userStore.user.Images.file.FileName)
+          return new URL('../../../assets/uploads/'+this.userStore.user.Images.file.FileName, import.meta.url ).href
         },
         updateScroll() {
           this.scrollPosition = window.scrollY
@@ -217,11 +216,6 @@ export default {
 </script>
 
 <style scoped>
-  .site-head{
-    background-color: rgba(0, 0, 0, .85);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    backdrop-filter: saturate(180%) blur(20px);
-  }
 
   .dropdown-own .dropdown:hover>.dropdown-menu,
   .dropdown-own .dropend:hover>.dropdown-menu {

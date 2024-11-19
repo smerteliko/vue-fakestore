@@ -66,7 +66,7 @@ export default {
     },
     data() {
         return {
-            image: this.checkImg() ? require(`../../../img/products/` + this.checkImg()) : '',
+            image: this.getMainImg(),
             quantity: this.product.quantity,
             desc: this.product.productDescription ? this.product.productDescription.BriefDesc : ''
 
@@ -84,13 +84,14 @@ export default {
             this.quantity++;
         },
 
-        checkImg() {
+        getMainImg() {
             if (this.product && this.product.productImages.length > 0) {
-                return this.product.productImages.find(
-                    (value)=>{
-                        return value.Main === true;
-                    }
-                    ).FileNameBase;
+              const mainImgName = this.product.productImages.find(
+                (value)=>{
+                  return value.Main === true;
+                }
+              ).FileNameBase;
+              return new URL('../../../assets/products/'+mainImgName, import.meta.url ).href
             }
             return '';
         },

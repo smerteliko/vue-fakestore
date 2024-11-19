@@ -1,6 +1,6 @@
 <template>
-  <div 
-    v-show="this.descText" 
+  <div
+    v-show="this.descText"
     class="hr mt-2 mb-2"
   />
   <div
@@ -22,8 +22,7 @@
 export default {
     name: "ProductFullDescComp",
     props:{
-      productDesc: Text,
-
+      productDesc: Object,
     },
     data(){
         return {

@@ -115,7 +115,7 @@ export default {
             checked: this.cartItem.checked,
             favourite: false,
             quantity: this.cartItem.quantity,
-            image: this.checkImg() ? require(`../../../img/products/` + this.checkImg()) : '',
+            image: this.getMainImg(),
             desc: this.cartItem.productDescription ? this.cartItem.productDescription.BriefDesc : '',
             price: 0
         }
@@ -129,7 +129,6 @@ export default {
             handler(newVal) {
                 this.cartStore.updateCartItemSelection(this.cartItem,newVal)
                 //this.checked = this.cartItem.checked;
-                console.log(newVal);
 
             },
         },
@@ -137,7 +136,6 @@ export default {
             handler(newVal) {
                 this.cartStore.updateCartItemSelection(this.cartItem,newVal)
                 this.checked = newVal
-              console.log(newVal);
             },
         },
     },
@@ -158,30 +156,31 @@ export default {
         "getCartItemPrice"
       ]),
 
-        checkImg() {
-            if (this.cartItem && this.cartItem.productImages.length > 0) {
-                return this.cartItem.productImages[0].FileNameBase;
+      getMainImg() {
+        if (this.product && this.product.productImages.length > 0) {
+          const mainImgName = this.product.productImages.find(
+            (value)=>{
+              return value.Main === true;
             }
-            return '';
-        },
+          ).FileNameBase;
+          return new URL('../../../assets/products/'+mainImgName, import.meta.url ).href
+        }
+        return '';
+      },
 
-        addQuantity() {
-          this.cartStore.addCartItemQuantity(this.cartItem);
-            this.cartStore.setCartItemsTotal(this.cartItem);
+      addQuantity() {
+        this.cartStore.addCartItemQuantity(this.cartItem);
+        this.cartStore.setCartItemsTotal(this.cartItem);
+      },
+      removeQuantity() {
+        this.cartStore.removeCartItemQuantity(this.cartItem);
+        this.cartStore.setCartItemsTotal(this.cartItem);
 
+        if(this.cartItem.quantity === 0) {
+          this.cartStore.removeItemFromCart(this.cartItem);
 
-        },
-        removeQuantity() {
-          this.cartStore.removeCartItemQuantity(this.cartItem);
-          this.cartStore.setCartItemsTotal(this.cartItem);
-
-            if(this.cartItem.quantity === 0) {
-              this.cartStore.removeItemFromCart(this.cartItem);
-
-            }
-            this.$forceUpdate();
-
-
+        }
+        this.$forceUpdate();
         },
       getPriceCurrencySymbol() {
         const findSymbol = this.jsonlistStore.currencies.find((item)=>{

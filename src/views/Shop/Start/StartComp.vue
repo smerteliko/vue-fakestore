@@ -20,9 +20,6 @@ export default {
     },
     async beforeMount() {
       this.fetchProductList();
-      await axios.get('/api/currencies/024').then((response)=>{
-        console.log(response)
-      })
     },
   methods: {
     ...mapActions(useProductStore, ["fetchProductList"]),

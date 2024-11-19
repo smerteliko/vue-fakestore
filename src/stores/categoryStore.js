@@ -1,7 +1,7 @@
 import axios from "axios";
 import {defineStore} from "pinia";
 
-
+axios.defaults.withCredentials = false;
 export const useCategoryStore = defineStore('category', {
 	state: () => {
 		return {
@@ -11,7 +11,7 @@ export const useCategoryStore = defineStore('category', {
 	},
 	actions: {
 		async fetchCatList() {
-			await axios.get('/json/catalogs')
+			await axios.get(import.meta.env.VITE_API_HOST+'/json/catalogs')
 					.then((response )=> {
 						this.categoryList = response.data.categories
 					}).catch((reason)=>{
@@ -20,7 +20,7 @@ export const useCategoryStore = defineStore('category', {
 		},
 
 		async fetchCategoryData(id ) {
-			await axios.get('/catalog/api/category/'+id)
+			await axios.get(import.meta.env.VITE_API_HOST+'/catalog/api/category/'+id)
 					.then((response )=> {
 						this.categoryData = response.data.list;
 					}).catch((reason)=>{

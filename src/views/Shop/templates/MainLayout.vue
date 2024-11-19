@@ -1,6 +1,6 @@
 <template>
   <FakestoreHeader />
-  <RouterView class="vh-100 mh-100" />
+  <RouterView class="vh-100"/>
   <UserLoginComp />
 </template>
 

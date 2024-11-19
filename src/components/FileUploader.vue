@@ -82,7 +82,7 @@ export default {
 
       let images = entity.Images ? entity.Images.file : undefined;
       if(entity && images) {
-        return require('../img/uploads/' + images.FileName)
+        return new URL('../assets/uploads/'+images.FileName, import.meta.url ).href
       }
       return ''
     }

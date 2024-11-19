@@ -37,7 +37,7 @@ export const useUserStore = defineStore('user', {
 				this.token = localStorage.getItem('token')
 			}
 
-			await axios.get('/user/is_authorized',{
+			await axios.get(import.meta.env.VITE_API_HOST+'/user/is_authorized',{
 				headers: { Authorization: `Bearer ${this.token}`}
 			}).then((response)=>{
 				this.user = JSON.parse(response.data.user);
@@ -56,7 +56,7 @@ export const useUserStore = defineStore('user', {
 
 		async logIn() {
 			this.loading = true;
-			 await axios.post('/user/login',
+			 await axios.post(import.meta.env.VITE_API_HOST+'/user/login',
 					{
 						username: this.email,
 						password: this.password
@@ -67,6 +67,7 @@ export const useUserStore = defineStore('user', {
 						}
 					})
 					.then((response)=>{
+
 						this.token = response.data.token;
 						localStorage.setItem('token', this.token);
 						window.location.reload();
@@ -80,7 +81,7 @@ export const useUserStore = defineStore('user', {
 
 		async logout() {
 			this.loading = true;
-			await axios.post('/user/logout');
+			await axios.post(import.meta.env.VITE_API_HOST+'/user/logout');
 			localStorage.removeItem('token');
 
 			this.$reset();
@@ -93,7 +94,7 @@ export const useUserStore = defineStore('user', {
 		async updateUserInfo() {
 			this.errors = {};
 			this.isLoading = true;
-			await axios.post('/user/update_info',
+			await axios.post(import.meta.env.VITE_API_HOST+'/user/update_info',
 					this.user,
 					{
 						headers: {
@@ -112,7 +113,7 @@ export const useUserStore = defineStore('user', {
 		async register() {
 			this.errors = {};
 			this.loading = true;
-			await axios.post('/user/register', {
+			await axios.post(import.meta.env.VITE_API_HOST+'/user/register', {
 				email: this.email,
 				password: this.password,
 				phone: this.phone
@@ -130,7 +131,7 @@ export const useUserStore = defineStore('user', {
 		async verify() {
 			this.errors = {};
 			this.isLoading= true;
-			await axios.post('/user/verify',
+			await axios.post(import.meta.env.VITE_API_HOST+'/user/verify',
 					{
 						code: this.verification
 					},
@@ -150,7 +151,7 @@ export const useUserStore = defineStore('user', {
 
 		async resendVerificationCode (){
 			this.isLoading = true;
-			await axios.post('/user/verify_resend_code',{},
+			await axios.post(import.meta.env.VITE_API_HOST+'/user/verify_resend_code',{},
 				{
 					headers: {
 						"Content-Type":'application/json',

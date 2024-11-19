@@ -53,11 +53,10 @@
 <script>
 import {mapActions, mapStores, mapWritableState} from "pinia";
 import {useUserStore} from "@/stores/userStore.js";
-import InputComp from "../../../InputComp.vue";
 
 export default {
   name: "AdminUserLoginComp",
-  components: {InputComp},
+  components: {},
   data(){
     return {
       errors: {

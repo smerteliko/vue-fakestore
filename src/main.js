@@ -1,6 +1,8 @@
 import './assets/main.css'
 
-import 'bootstrap'
+import 'bootstrap/js/dist/button'
+import 'bootstrap/js/dist/modal'
+import 'bootstrap/dist/css/bootstrap.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
