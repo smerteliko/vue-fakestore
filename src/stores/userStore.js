@@ -45,7 +45,7 @@ export const useUserStore = defineStore('user', {
 				this.email = this.user.email;
 				this.id = this.user.id
 				this.loading = false;
-				this.currencyID = this.user.currency.IsoCode
+				this.currencyID = this.user.Currency.IsoCode
 				this.loading = false;
 
 			}).catch((e)=>{
@@ -94,7 +94,7 @@ export const useUserStore = defineStore('user', {
 		async updateUserInfo() {
 			this.errors = {};
 			this.isLoading = true;
-			await axios.post(import.meta.env.VITE_API_HOST+'/user/update_info',
+			await axios.patch(import.meta.env.VITE_API_HOST+'/user/update',
 					this.user,
 					{
 						headers: {
@@ -116,7 +116,7 @@ export const useUserStore = defineStore('user', {
 			await axios.post(import.meta.env.VITE_API_HOST+'/user/register', {
 				email: this.email,
 				password: this.password,
-				phone: this.phone
+				Phone: this.phone
 			}).then((response)=>{
 				this.response = response;
 				this.loading = false;

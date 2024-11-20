@@ -206,7 +206,7 @@ export default {
             return ''
         },
         getImage() {
-          return new URL('../../../assets/uploads/'+this.userStore.user.Images.file.FileName, import.meta.url ).href
+          return new URL('assets/img/user-avatar/'+this.userStore.user.Images.file.FileName, import.meta.env.VITE_API_HOST ).href
         },
         updateScroll() {
           this.scrollPosition = window.scrollY

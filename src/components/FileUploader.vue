@@ -55,6 +55,8 @@
 
 <script>
 import axios from 'axios'
+import { mapStores } from 'pinia'
+import { useUserStore } from '@/stores/userStore.js'
 
 export default {
   name: "FileUploader",
@@ -82,10 +84,12 @@ export default {
 
       let images = entity.Images ? entity.Images.file : undefined;
       if(entity && images) {
-        return new URL('../assets/uploads/'+images.FileName, import.meta.url ).href
+        return new URL('assets/img/'+this.uploadTo+'/'+images.FileName, import.meta.env.VITE_API_HOST ).href
+
       }
       return ''
-    }
+    },
+    ...mapStores(useUserStore),
   },
   methods: {
     async submitFile() {
@@ -93,12 +97,12 @@ export default {
 
       formData.append('file', this.fileSave);
       formData.append('entity', JSON.stringify(this.entity));
-      await axios.post('/file/' + this.uploadTo,
+      await axios.post(import.meta.env.VITE_API_HOST+'/file/' + this.uploadTo,
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${this.token}`
+            Authorization: `Bearer ${this.userStore.token}`
           },
 
         }
