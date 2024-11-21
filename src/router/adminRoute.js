@@ -1,4 +1,4 @@
-import AdminComp from "@/views/Admin/AdminMain/AdminComp.vue";
+import AdminComp from "@/views/Admin/AdminMain/AdminMainLayout.vue";
 import AdminCompMain from "@/views/Admin/AdminMain/AdminCompMain.vue";
 import AdminCompEntities from "@/views/Admin/AdminMain/AdminCompEntities.vue";
 import AdminUserLoginComp from "@/views/Admin/AdminUser/AdminUserLoginComp.vue";

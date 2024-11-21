@@ -1,5 +1,5 @@
 
-const UserComp = ()=> import("@/views/Shop/User/UserComp.vue");
+const UserComp = ()=> import("@/views/Shop/User/UserLayout.vue");
 const UserPersonalInfo = ()=> import("@/views/Shop/User/UserPersonalInfoComp.vue");
 const UserVerificationComp = ()=> import("@/views/Shop/User/UserVerificationComp.vue");
 

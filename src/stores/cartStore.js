@@ -1,7 +1,9 @@
 import {defineStore} from "pinia";
 import {useUserStore} from "./userStore.js";
 import {useJSONStore} from "./jsonStore.js";
+import axios from 'axios'
 
+axios.defaults.withCredentials = false;
 export const useCartStore = defineStore('cart', {
 	state: () => {
 		return {
@@ -40,9 +42,11 @@ export const useCartStore = defineStore('cart', {
 		},
 
 		updateCartItemsSelection(item) {
-			this.cartItems.forEach((valueC)=>{
- 				valueC.checked = item;
- 			});
+      if(this.cartItems) {
+        this.cartItems.forEach((valueC)=>{
+          valueC.checked = item;
+        });
+      }
 		},
 
 		updateCartItemSelection(item, checked) {
@@ -97,6 +101,7 @@ export const useCartStore = defineStore('cart', {
 			if(window.localStorage.getItem('cart')) {
 				return JSON.parse(window.localStorage.getItem('cart'));
 			}
+      return window.localStorage.setItem('cart', "[]");
 		},
 		getCheckedCartItems() {
 			let checked = [];
@@ -110,7 +115,7 @@ export const useCartStore = defineStore('cart', {
 			return checked;
 		},
 		getCartTotalItems() {
-			return this.cartItems?this.cartItems.length:[];
+			return this.cartItems?this.cartItems.length:0;
 		},
 		getCartTotal() {
 			return this.cartTotal;

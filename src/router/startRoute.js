@@ -1,4 +1,4 @@
-const StartComp = ()=> import("@/views/Shop/Start/StartComp.vue");
+const StartComp = ()=> import("@/views/Shop/Start/ShopHomeLayout.vue");
 
 let startRoute = {
 	path: '/',

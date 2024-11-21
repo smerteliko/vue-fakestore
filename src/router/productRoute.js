@@ -1,4 +1,4 @@
-const ProductComp = () => import( "@/views/Shop/Products/ProductComp.vue");
+const ProductComp = () => import( "@/views/Shop/Products/ProductLayout.vue");
 
 let productRoute  = [
 	{

@@ -6,7 +6,7 @@
     <div class="container-fluid">
       <div class="navbar-brand  align-content-start me-lg-5">
         <RouterLink
-          class="nav-link  link-primary"
+          class="nav-link  link-primary "
           to="/"
         >
           <h3 class="text-lg-center mb-lg-0 ">
@@ -32,7 +32,7 @@
             class="nav-link dropdown-toggle link-primary"
             data-toggle="dropdown"
             data-bs-toggle="dropdown"
-            aria-haspopup="true"
+            aria-haspopup="false"
             aria-expanded="false"
           >
             <h3 class="text-lg-center mb-0">
@@ -61,7 +61,7 @@
                 aria-expanded="false"
               >
                 <h6 class="">
-                  <i :class="getIcon(categ.id)" /> {{ categ.Name }}
+                  <i  /> {{ categ.Name }}
                 </h6>
               </RouterLink>
               <div class="dropdown-menu">
@@ -72,9 +72,8 @@
                 >
                   <RouterLink
                     :key="`header-category-`+categ.Name+`-subcategory-`+subCat.Name"
-                    :to="{name: 'CategoryCompBuSub', params:{catID: categ.id, subID:subCat.id}}"
+                    :to="{name: 'CategoryCompBySub', params:{catID: categ.id, subID:subCat.id}}"
                     class="nav-link"
-                    replace
                   >
                     <h6 class="">
                       {{ subCat.Name }}
@@ -107,7 +106,7 @@
             class="nav-link link-primary ms-lg-3"
             to="/user/profile/personal_info"
           >
-            <div v-if="!this.userStore.user.Images">
+            <div v-if="!this.userStore.user.userImages">
               <h3 class="text-lg-center mb-0">
                 <i class="fa-solid fa-house-user" />
               </h3>
@@ -118,7 +117,7 @@
             <div v-else>
               <img
                 class=" border-color img-size rounded-container obj-fit"
-                :src="this.getImage()"
+                :src="this.getUserAvatar()"
                 alt=""
               >
             </div>
@@ -184,30 +183,31 @@ export default {
 
 
         getIcon(id) {
-            if(id === 1) {
-                return 'fa-solid fa-shirt'
-            }
-
-            if(id === 2) {
-                return 'fa-solid fa-shoe-prints'
-            }
-
-            if(id === 3) {
-                return 'fa-solid fa-ring'
-            }
-
-            if(id === 4) {
-                return 'fa-solid fa-laptop-code'
-            }
-
-            if(id === 5) {
-                return 'fa-solid fa-house-chimney'
-            }
+            // if(id === 1) {
+            //     return 'fa-solid fa-shirt'
+            // }
+            //
+            // if(id === 2) {
+            //     return 'fa-solid fa-shoe-prints'
+            // }
+            //
+            // if(id === 3) {
+            //     return 'fa-solid fa-ring'
+            // }
+            //
+            // if(id === 4) {
+            //     return 'fa-solid fa-laptop-code'
+            // }
+            //
+            // if(id === 5) {
+            //     return 'fa-solid fa-house-chimney'
+            // }
 
             return ''
         },
-        getImage() {
-          return require('../../../img/uploads/'+this.userStore.user.Images.file.FileName)
+        getUserAvatar() {
+          const image = this.userStore.getUserImages;
+          return new URL('assets/img/user-avatar/'+image.file.FileName, import.meta.env.VITE_API_HOST ).href
         },
         updateScroll() {
           this.scrollPosition = window.scrollY
@@ -217,11 +217,6 @@ export default {
 </script>
 
 <style scoped>
-  .site-head{
-    background-color: rgba(0, 0, 0, .85);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    backdrop-filter: saturate(180%) blur(20px);
-  }
 
   .dropdown-own .dropdown:hover>.dropdown-menu,
   .dropdown-own .dropend:hover>.dropdown-menu {
