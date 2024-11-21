@@ -6,7 +6,7 @@
 
 <script>
 import FakestoreHeader from "./Header.vue";
-import UserLoginComp from "../User/UserLoginComp.vue";
+import UserLoginComp from "../views/Shop/User/UserLoginComp.vue";
 
 export default {
   name: "MainLayout",

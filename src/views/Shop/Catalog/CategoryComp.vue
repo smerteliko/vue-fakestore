@@ -54,7 +54,7 @@
 
 <script>
 
-import ProductListComp from "../Products/ProductsListComp.vue"
+import ProductListComp from "../Products/ProductsListLayout.vue"
 import {mapActions, mapStores} from "pinia";
 import {useCategoryStore} from "@/stores/categoryStore.js";
 import {useProductStore} from "@/stores/productsStore.js";

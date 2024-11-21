@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ProductListComp from "../Products/ProductsListComp.vue"
+import ProductListComp from "../Products/ProductsListLayout.vue"
 import {useProductStore} from "@/stores/productsStore.js";
 import {mapActions, mapStores} from 'pinia'
 import axios from "axios";

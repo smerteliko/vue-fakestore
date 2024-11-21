@@ -1,4 +1,4 @@
-const CartComp = () => import( "@/views/Shop/Cart/CartComp.vue");
+const CartComp = () => import( "@/views/Shop/Cart/CartLayout.vue");
 
 let cartRoute  = [
 	{
