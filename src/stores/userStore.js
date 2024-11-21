@@ -184,6 +184,12 @@ export const useUserStore = defineStore('user', {
 
 			return this.user.roles.includes('ROLE_SUPER_ADMIN') || false;
 
-		}
+		},
+    getUserImages() {
+      if(!this.user.userImages) {
+        return {};
+      }
+      return this.user.userImages;
+    }
 	}
 })

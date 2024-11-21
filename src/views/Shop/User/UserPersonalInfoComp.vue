@@ -25,9 +25,12 @@
     <div class="d-flex pt-5">
       <div class="col-8">
         <div class="row pb-4">
-          <div class="col-1 d-flex align-items-center">
+          <div
+            v-if="this.userStore.user.isVerified"
+            class="col-1 d-flex align-items-center"
+          >
              <span
-               v-if="this.userStore.user.isVerified"
+
                class="rounded "
                title="User verified"
              >
@@ -111,10 +114,9 @@
         </div>
       </div>
       <div class="col-4 ps-5">
-        <FileUploader
-          class=""
+        <UserAvatarFileUploader
           :upload-to="`user-avatar`"
-          :entity="this.userStore.user"
+          :user-images="this.userStore.getUserImages"
         />
       </div>
     </div>
@@ -142,10 +144,11 @@
 import {mapStores} from "pinia";
 import {useUserStore} from "@/stores/userStore.js";
 import {useJSONStore} from "@/stores/jsonStore.js";
+import UserAvatarFileUploader from '@/components/UserAvatarFileUploader.vue'
 
 export default {
   name: "UserPersonalInfo",
-  components: {},
+  components: {UserAvatarFileUploader},
   data(){
     return {
       response:{}
