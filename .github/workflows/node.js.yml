@@ -5,7 +5,7 @@ name: Vue Fakestore CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "dev" ]
   pull_request:
     branches: [ "master" ]
 
@@ -26,6 +26,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        registry-url: npm.fontawesome.com
+
     - run: npm ci
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
     - run: npm run build --if-present
     - run: npm test
