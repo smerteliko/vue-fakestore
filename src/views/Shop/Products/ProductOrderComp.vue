@@ -76,6 +76,7 @@
 import {mapStores} from "pinia";
 import {useUserStore} from "@/stores/userStore.js";
 import {useJSONStore} from "@/stores/jsonStore.js";
+import { useCartStore } from '@/stores/cartStore.js'
 
 export default {
   name: "ProductOrderComp",
@@ -99,25 +100,34 @@ export default {
     productQuantity() {
       return this.productQ;
     },
-    ...mapStores(useUserStore, useJSONStore)
+    ...mapStores(useUserStore, useJSONStore,useCartStore)
   },
 
   methods: {
 
     addQuantity() {
+      this.cartStore.addToCart(this.product)
       this.productQ++;
-
     },
+
     removeQuantity() {
+      this.cartStore.removeCartItemQuantity(this.product);
       this.productQ--;
+      if(this.productQ === 0) {
+        this.cartStore.removeItemFromCart(this.product);
+      }
+      this.$forceUpdate();
     },
 
     getPrice() {
-      if(!this.userStore.isAuthed) {
-        return this.product.productPrice.ConvertedPrice[840]
+      if(!this.product.productPrice){
+        return 0;
+      }
+      if(this.userStore.isAuthed) {
+        return this.product.productPrice.ConvertedPrice[this.userStore.currencyID]
       }
 
-      return this.product.productPrice.ConvertedPrice[this.userStore.currencyID]
+      return this.product.productPrice.ConvertedPrice[840]
     },
     getPriceCurrencySymbol() {
       const findSymbol = this.jsonlistStore.currencies.find((item)=>{

@@ -5,7 +5,7 @@
         <div class="col d-flex ps-0">
           <div class="position-relative d-flex">
             <img
-              id="image"
+              id="user-avatar-file"
               width="136px"
               height="136px"
               class="col-4 img-fluid border-color p-0 rounded-container img-size obj-fit d-block"
@@ -25,8 +25,8 @@
             </button>
 
             <input
-              id="file"
-              ref="file"
+              id="user-avatar"
+              ref="user-avatar"
               type="file"
               class="d-none"
               @change="handleFileUpload($event)"
@@ -55,15 +55,17 @@
 
 <script>
 import axios from 'axios'
+import { mapStores } from 'pinia'
+import { useUserStore } from '@/stores/userStore.js'
 
 export default {
-  name: "FileUploader",
+  name: "UserAvatarFileUploader",
   props: {
     uploadTo : {
       type: String,
-      default: '/new'
+      default: '/user-avatar'
     },
-    entity : {
+    userImages : {
       type: Object,
       default() {
         return undefined;
@@ -78,27 +80,26 @@ export default {
   },
   computed: {
     file() {
-      let entity = this.entity ? this.entity : undefined
+      let images = this.userImages ? this.userImages.file : undefined;
+      if(this.userImages && images) {
+        return new URL('assets/img/'+this.uploadTo+'/'+images.FileName, import.meta.env.VITE_API_HOST ).href
 
-      let images = entity.Images ? entity.Images.file : undefined;
-      if(entity && images) {
-        return require('../img/uploads/' + images.FileName)
       }
       return ''
-    }
+    },
+    ...mapStores(useUserStore),
   },
   methods: {
     async submitFile() {
       let formData = new FormData();
 
-      formData.append('file', this.fileSave);
-      formData.append('entity', JSON.stringify(this.entity));
-      await axios.post('/file/' + this.uploadTo,
+      formData.append('user-avatar', this.fileSave);
+      await axios.post(import.meta.env.VITE_API_HOST+'/file/' + this.uploadTo,
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${this.token}`
+            Authorization: `Bearer ${this.userStore.token}`
           },
 
         }
@@ -111,14 +112,14 @@ export default {
     },
 
     chooseImage() {
-      let output = document.getElementById('file');
+      let output = document.getElementById('user-avatar');
       output.click();
     },
 
 
     handleFileUpload(event) {
       const files = event.target.files[0];
-      let output = document.getElementById('image');
+      let output = document.getElementById('user-avatar-file');
       output.src = URL.createObjectURL(files);
       output.onload = function () {
         URL.revokeObjectURL(output.src) // free memory

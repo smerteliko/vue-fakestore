@@ -2,15 +2,6 @@
   <div class="container container-color rounded-pill d-flex flex-column">
     <div class="row">
       <h2 class="d-inline-flex align-items-center">
-        <span
-          v-if="this.userStore.user.isVerified"
-          class="col-1"
-          title="User verified"
-        >
-          <i
-            class="text-success text-center fa-solid fa-check"
-          />
-        </span>
 
         <span class="col-5">Personal information</span>
         <button
@@ -33,6 +24,34 @@
     </div>
     <div class="d-flex pt-5">
       <div class="col-8">
+        <div class="row pb-4">
+          <div
+            v-if="this.userStore.user.isVerified"
+            class="col-1 d-flex align-items-center"
+          >
+             <span
+
+               class="rounded "
+               title="User verified"
+             >
+          <i
+            class=" font-size-2rem text-success text-center fa-solid fa-check"
+          />
+               <small>verified</small>
+        </span>
+          </div>
+          <div class="col pe-3 ps-0">
+            <InputComp
+              :id="`userProfileEmail`"
+              :model="this.userStore.user.email"
+              :label="`Email`"
+              :type="`email`"
+              :disabled="true"
+              @input-value="this.userStore.user.email = $event"
+            />
+
+          </div>
+        </div>
         <div class="row">
           <div class="col ps-0">
             <InputComp
@@ -57,21 +76,10 @@
           <div class="pe-3 ps-0">
             <InputComp
               :id="`userProfilePhone`"
-              :model="this.userStore.user.phone"
+              :model="this.userStore.user.Phone"
               :label="`Phone`"
               :type="`tel`"
-              @input-value="this.userStore.user.phone = $event"
-            />
-          </div>
-        </div>
-        <div class="row pt-4">
-          <div class="col pe-3 ps-0">
-            <InputComp
-              :id="`userProfileEmail`"
-              :model="this.userStore.user.email"
-              :label="`Email`"
-              :type="`email`"
-              @input-value="this.userStore.user.email = $event"
+              @input-value="this.userStore.user.Phone = $event"
             />
           </div>
         </div>
@@ -88,7 +96,7 @@
           </div>
           <div class="col">
             <SelectComp
-              v-model="this.userStore.user.currency"
+              v-model="this.userStore.user.Currency"
               class="select-styles "
               label="Name"
               :clearable="false"
@@ -106,10 +114,9 @@
         </div>
       </div>
       <div class="col-4 ps-5">
-        <FileUploader
-          class=""
-          :upload-to="`new_user_avatar`"
-          :entity="this.userStore.user"
+        <UserAvatarFileUploader
+          :upload-to="`user-avatar`"
+          :user-images="this.userStore.getUserImages"
         />
       </div>
     </div>
@@ -137,10 +144,11 @@
 import {mapStores} from "pinia";
 import {useUserStore} from "@/stores/userStore.js";
 import {useJSONStore} from "@/stores/jsonStore.js";
+import UserAvatarFileUploader from '@/components/UserAvatarFileUploader.vue'
 
 export default {
   name: "UserPersonalInfo",
-  components: {},
+  components: {UserAvatarFileUploader},
   data(){
     return {
       response:{}
@@ -173,11 +181,16 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 
 .font-size-1rem {
   font-size: 1rem !important;
 }
+
+.font-size-2rem {
+  font-size: 3rem !important;
+}
+
 .border-left-50rem {
   border-top-left-radius: 50rem !important;
   border-bottom-left-radius: 50rem !important;

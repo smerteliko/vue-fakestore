@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ProductListComp from "../Products/ProductsListComp.vue"
+import ProductListComp from "../Products/ProductsListLayout.vue"
 import {useProductStore} from "@/stores/productsStore.js";
 import {mapActions, mapStores} from 'pinia'
 import axios from "axios";
@@ -20,9 +20,6 @@ export default {
     },
     async beforeMount() {
       this.fetchProductList();
-      await axios.get('/api/currencies/024').then((response)=>{
-        console.log(response)
-      })
     },
   methods: {
     ...mapActions(useProductStore, ["fetchProductList"]),

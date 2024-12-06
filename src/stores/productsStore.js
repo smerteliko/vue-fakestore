@@ -1,6 +1,7 @@
 import axios from "axios";
 import {defineStore} from "pinia";
 
+axios.defaults.withCredentials = false;
 export const useProductStore = defineStore('product', {
 	state: () =>{
 		return {
@@ -30,7 +31,7 @@ export const useProductStore = defineStore('product', {
 	},
 	actions: {
 		async fetchProductList() {
-			await axios.get('/products/ajax/list')
+			await axios.get(import.meta.env.VITE_API_HOST+'/products/api/list')
 					.then((response )=> {
 						this.productsList = response.data;
 					}).catch((reason)=>{
@@ -38,7 +39,7 @@ export const useProductStore = defineStore('product', {
 					});
 		},
 		async fetchProductListByCat(id) {
-			await axios.get('/products/ajax/category/'+id)
+			await axios.get(import.meta.env.VITE_API_HOST+'/products/api/category/'+id)
 					.then((response )=> {
 						this.productsListByCat = response.data;
 					}).catch((reason)=>{
@@ -47,7 +48,7 @@ export const useProductStore = defineStore('product', {
 		},
 
 		async fetchProductListBySubCat(id) {
-			await axios.get('/products/ajax/subcategory/'+id)
+			await axios.get(import.meta.env.VITE_API_HOST+'/products/api/subcategory/'+id)
 					.then((response )=> {
 						this.productsListBySubCat = response.data;
 					}).catch((reason)=>{
@@ -56,7 +57,7 @@ export const useProductStore = defineStore('product', {
 		},
 
 		async fetchProductData(id) {
-			await axios.get('/products/ajax/'+id)
+			await axios.get(import.meta.env.VITE_API_HOST+'/products/api/'+id)
 					.then((response )=> {
 						this.productData = response.data.productData;
 					}).catch((reason)=>{
@@ -64,7 +65,7 @@ export const useProductStore = defineStore('product', {
 					});
 		},
 		async fetchProductImages(id) {
-			await axios.get('/products/ajax/'+id+'/images/')
+			await axios.get(import.meta.env.VITE_API_HOST+'/products/api/'+id+'/images/')
 					.then((response )=> {
 						this.productImages = response.data.productImages;
 					}).catch((reason)=>{

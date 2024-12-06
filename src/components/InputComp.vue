@@ -10,6 +10,7 @@
         :aria-describedby="`validation`+this.id"
         :autocomplete="this.type"
         :required="this.required"
+        :disabled="this.disabled"
         class="form-control border border-right-50rem border-left-50rem"
         @input="$emit('input-value', $event.target.value)"
       >

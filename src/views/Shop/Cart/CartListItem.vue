@@ -2,7 +2,7 @@
   <tr class="d-flex tr-height">
     <td class="align-content-center ">
       <img
-        :src="this.image"
+        :src="``"
         class="img-thumbnail"
         width="100px"
         height="100px"
@@ -10,29 +10,30 @@
       >
     </td>
     <td class="align-content-center col-3 ">
-      <RouterLink
-        :to="{name: 'ProductComp', params:{id: this.cartItem.id}}"
-        class=" link-underline-opacity-100 text-decoration-none"
-      >
-        <h6 class="mb-0 text-decoration-underline">
-          {{ this.cartItem.Name }}
-        </h6>
-        <div class="product-description">
-          <small class="text-secondary"> {{ this.desc }}</small>
-        </div>
-      </RouterLink>
+            <RouterLink
+              :to="{name: 'ProductComp', params:{id: this.cartItem.product.id}}"
+              class=" link-underline-opacity-100 text-decoration-none"
+            >
+      <h6 class="mb-0 text-decoration-underline">
+        {{ this.cartItem.product.Name }}
+      </h6>
+      <div class="product-description">
+        <small class="text-secondary"> {{ this.desc }}</small>
+      </div>
+         </RouterLink>
     </td>
     <td class="align-content-center col-2">
       <div class="input-group input-group-sm flex-nowrap w-100 ">
         <button
           class="btn btn-outline-danger border-end-0 border-radius"
           type="button"
-          @click="this.removeQuantity()"
+          @click="this.updateQuantity(this.cartItem.product.id, this.cartItem.quantity-1)"
         >
+
           <i
             :class="{
-              'fa-solid fa-minus' : this.quantity !== 1,
-              'fa-regular fa-trash-can' : this.quantity === 1}"
+              'fa-solid fa-minus' : this.cartItem.quantity !== 1,
+              'fa-regular fa-trash-can' : this.cartItem.quantity === 1}"
           />
         </button>
         <input
@@ -46,7 +47,7 @@
         <button
           class=" btn btn-outline-success border-start-0 border-radius"
           type="button"
-          @click="this.addQuantity()"
+          @click="this.updateQuantity(this.cartItem.product.id, this.cartItem.quantity+1)"
         >
           <i class="fa-solid fa-plus" />
         </button>
@@ -54,16 +55,16 @@
     </td>
     <td class="align-content-center col-3">
       <h5 class="mb-0">
-        Total: {{ this.cartItem.totalPrice }}
+        Total: {{ this.cartStore.cartItemPrice(this.cartItem.product.id) }}
         <i
           class=""
-          v-text="this.getPriceCurrencySymbol()"
+          v-text="this.cartStore.getCurrencySymbol"
         />
       </h5>
       <small class="text-secondary text-decoration-underline">
-        <i> Per each: {{ this.price }} </i>
+        <i> Per each: {{ this.cartItem.product.productPrice.ConvertedPrice[this.userStore.currencyID] }} </i>
         <i
-          v-text="this.getPriceCurrencySymbol()"
+          v-text="this.cartStore.getCurrencySymbol"
         />
       </small>
       <p class="align-text-bottom mb-0">
@@ -73,123 +74,71 @@
     <td class="align-content-center col-1">
       <div class="form-check">
         <input
-          v-model="this.checked"
+          v-model="this.cartItem.forFuturePurchase"
           type="checkbox"
           class="form-check-input"
+          @change="this.toggleSelected(this.cartItem.product.id)"
         >
-      </div>
-    </td>
-    <td class="align-content-center col-1">
-      <div class="form-check ps-0">
-        <label class="fancy-checkbox font-size-x-large">
-          <input
-            class="form-check-input"
-            type="checkbox"
-          >
-          <i class="fa-regular icon-color fa-heart unchecked" />
-          <i class="fa-solid icon-color fa-heart checked" />
-        </label>
       </div>
     </td>
   </tr>
 </template>
 
 <script>
-import {mapActions, mapStores} from "pinia";
-import {useCartStore} from "@/stores/cartStore.js";
-import {useUserStore} from "@/stores/userStore.js";
-import {useJSONStore} from "@/stores/jsonStore.js";
+import { mapStores } from 'pinia'
+import { useCartStore } from '@/stores/cartStore.js'
+import { useUserStore } from '@/stores/userStore.js'
+import { useJSONStore } from '@/stores/jsonStore.js'
 
 export default {
-    name: "CartListItem",
-    props:{
-      cartItem:{
-        type:Object,
-        default() {
-          return {  }
-        }
-      }
-    },
-    data() {
-        return {
-            checked: this.cartItem.checked,
-            favourite: false,
-            quantity: this.cartItem.quantity,
-            image: this.checkImg() ? require(`../../../img/products/` + this.checkImg()) : '',
-            desc: this.cartItem.productDescription ? this.cartItem.productDescription.BriefDesc : '',
-            price: 0
-        }
-    },
-    computed:{
-      ...mapStores(useCartStore, useUserStore, useJSONStore)
-    },
-
-    watch:{
-        checked: {
-            handler(newVal) {
-                this.cartStore.updateCartItemSelection(this.cartItem,newVal)
-                //this.checked = this.cartItem.checked;
-                console.log(newVal);
-
-            },
-        },
-        'cartItem.checked': {
-            handler(newVal) {
-                this.cartStore.updateCartItemSelection(this.cartItem,newVal)
-                this.checked = newVal
-              console.log(newVal);
-            },
-        },
-    },
-    beforeMount() {
-      this.cartStore.setCartItemsTotal(this.cartItem);
-      this.cartStore.updateCartItemsSelection(false)
-      this.price = this.cartStore.getCartItemPrice(this.cartItem)
-      this.checked = this.cartItem.checked;
-    },
-    methods: {
-      ...mapActions(useCartStore, [
-        'setCartItemsTotal',
-        'updateCartItemSelection',
-        "updateCartItemsSelection",
-        'addCartItemQuantity',
-        "removeCartItemQuantity",
-        "removeItemFromCart",
-        "getCartItemPrice"
-      ]),
-
-        checkImg() {
-            if (this.cartItem && this.cartItem.productImages.length > 0) {
-                return this.cartItem.productImages[0].FileNameBase;
-            }
-            return '';
-        },
-
-        addQuantity() {
-          this.cartStore.addCartItemQuantity(this.cartItem);
-            this.cartStore.setCartItemsTotal(this.cartItem);
-
-
-        },
-        removeQuantity() {
-          this.cartStore.removeCartItemQuantity(this.cartItem);
-          this.cartStore.setCartItemsTotal(this.cartItem);
-
-            if(this.cartItem.quantity === 0) {
-              this.cartStore.removeItemFromCart(this.cartItem);
-
-            }
-            this.$forceUpdate();
-
-
-        },
-      getPriceCurrencySymbol() {
-        const findSymbol = this.jsonlistStore.currencies.find((item)=>{
-          return item.IsoCode === (this.userStore.currencyID ? this.userStore.currencyID : '840')
-        })
-        return findSymbol?findSymbol.Symbol:''
+  name: 'CartListItem',
+  props: {
+    cartItem: {
+      type: Object,
+      default() {
+        return {}
       }
     }
+  },
+  data() {
+    return {
+      favourite: false,
+      quantity: this.cartItem.quantity,
+      image: this.getMainImg(),
+      desc: this.cartItem.product.productDescription ? this.cartItem.product.productDescription.BriefDesc : '',
+      price: 0
+    }
+  },
+  computed: {
+    ...mapStores(useCartStore, useUserStore, useJSONStore)
+  },
+  beforeMount() {
+
+  },
+  methods: {
+    toggleSelected(productId) {
+      this.cartStore.toggleForFuturePurchase(productId)
+    },
+    updateQuantity(productId, quantity) {
+      if(quantity < 1) {
+        this.cartStore.removeItem(productId);
+      } else {
+        this.cartStore.updateItemQuantity(productId, quantity);
+      }
+    },
+
+    getMainImg() {
+      if (this.product && this.product.productImages.length > 0) {
+        const mainImgName = this.product.productImages.find(
+          (value) => {
+            return value.Main === true
+          }
+        ).FileNameBase
+        return new URL('../../../assets/products/' + mainImgName, import.meta.url).href
+      }
+      return ''
+    }
+  }
 }
 </script>
 
@@ -197,75 +146,72 @@ export default {
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-    text-align: center;
+  -webkit-appearance: none;
+  margin: 0;
+  text-align: center;
 }
 
 /* Firefox */
 input[type=number] {
-    -moz-appearance: textfield;
-    text-align: center;
+  -moz-appearance: textfield;
+  text-align: center;
 }
 
-input:disabled{
-    background: none;
+input:disabled {
+  background: none;
 }
 
-input[type=checkbox]
-{
-    /* Double-sized Checkboxes */
-    -ms-transform: scale(1.5); /* IE */
-    -moz-transform: scale(1.5); /* FF */
-    -webkit-transform: scale(1.5); /* Safari and Chrome */
-    -o-transform: scale(1.5); /* Opera */
-    padding: 5px;
+input[type=checkbox] {
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(1.5); /* IE */
+  -moz-transform: scale(1.5); /* FF */
+  -webkit-transform: scale(1.5); /* Safari and Chrome */
+  -o-transform: scale(1.5); /* Opera */
+  padding: 5px;
 }
 
 .tr-height {
-    height: 120px;
+  height: 120px;
 }
 
 
 .border-input {
-    border-style: solid !important;
-    border-image: linear-gradient(90deg, rgba(220,53,69,1) 0%, rgba(25,135,84,1) 100%) 1 !important;
+  border-style: solid !important;
+  border-image: linear-gradient(90deg, rgba(220, 53, 69, 1) 0%, rgba(25, 135, 84, 1) 100%) 1 !important;
 }
 
 .border-radius {
-    border-radius: 20px;
+  border-radius: 20px;
 }
 
 .fancy-checkbox input[type="checkbox"],
 .fancy-checkbox .checked {
-    display: none !important;
-    width: 1em !important;
-    height: 1em !important;
+  display: none !important;
+  width: 1em !important;
+  height: 1em !important;
 }
 
 .fancy-checkbox input[type="checkbox"],
 .fancy-checkbox .checked {
-    display: none !important;
-    width: 1em !important;
-    height: 1em !important;
+  display: none !important;
+  width: 1em !important;
+  height: 1em !important;
 }
 
-.fancy-checkbox input[type="checkbox"]:checked ~ .checked
-{
-    display: inline-block!important;
-    width: 1em !important;
-    height: 1em !important;
+.fancy-checkbox input[type="checkbox"]:checked ~ .checked {
+  display: inline-block !important;
+  width: 1em !important;
+  height: 1em !important;
 }
 
-.fancy-checkbox input[type="checkbox"]:checked ~ .unchecked
-{
-    display: none !important;
-    width: 1em!important;
-    height: 1em!important;
+.fancy-checkbox input[type="checkbox"]:checked ~ .unchecked {
+  display: none !important;
+  width: 1em !important;
+  height: 1em !important;
 }
 
 .font-size-x-large {
-    font-size: x-large !important;
+  font-size: x-large !important;
 }
 
 

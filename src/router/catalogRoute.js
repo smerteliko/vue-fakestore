@@ -9,7 +9,7 @@ let catalogRoute = [
 
 	{
 		path: '/catalog/category/:catID/subcategory/:subID',
-		name: "CategoryCompBuSub",
+		name: "CategoryCompBySub",
 		component: CategoryComp
 	},
 ];

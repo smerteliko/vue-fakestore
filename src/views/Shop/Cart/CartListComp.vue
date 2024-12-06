@@ -3,11 +3,11 @@
     <table class="table table-collapse table-hover ">
       <tbody
         v-for="prod in this.cartList"
-        :key="`cart-list-item-product`+prod.Name"
+        :key="`cart-list-item-product`+prod.product.id"
         class=""
       >
         <CartListItem
-          :key="`cart-list-item-`+prod.id"
+          :key="`cart-list-item-`+prod.product.id"
           :cart-item="prod"
         />
       </tbody>
