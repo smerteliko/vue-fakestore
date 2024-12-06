@@ -11,7 +11,7 @@ export const useUserStore = defineStore('user', {
 			phone:'',
 			token: null,
 			verification: '',
-			currencyID: null,
+			currencyID: '840',
 			isLoading: false,
 			errors: {},
 			response: {},

@@ -1,5 +1,6 @@
 <template>
-  <div class="card bg-light border-1-solid-white border-product-foto w-18rem height-400px">
+  <div
+    class="card bg-light border-1-solid-white border-product-foto w-18rem height-400px">
     <div class="card-header header-height">
       <RouterLink
         :to="{name: 'ProductComp', params:{id: product.id}}"
@@ -36,9 +37,9 @@
         <div>
           <button
             class="btn btn-outline-danger"
-            :class="product.quantity !== 0 ? 'disabled':''"
+            :class="this.cartStore.checkIsProductInCart(product.id) ? 'disabled':''"
             title="Add to cart"
-            @click="addItem"
+            @click="this.addToCart"
           >
             <i class="fa-solid fa-cart-plus" />
           </button>
@@ -49,113 +50,111 @@
 </template>
 
 <script>
-import {mapActions, mapStores} from "pinia";
-import {useCartStore} from "@/stores/cartStore.js";
-import {useUserStore} from "@/stores/userStore.js";
-import {useJSONStore} from "@/stores/jsonStore.js";
+import { mapActions, mapStores } from 'pinia'
+import { useCartStore } from '@/stores/cartStore.js'
+import { useUserStore } from '@/stores/userStore.js'
+import { useJSONStore } from '@/stores/jsonStore.js'
 
 export default {
-    name: "ProductCardComp",
-    props: {
-      product: {
-        type:Object,
-        default() {
-          return {  }
-        }
-      }
-    },
-    data() {
-        return {
-            image: this.getMainImg(),
-            quantity: this.product.quantity,
-            desc: this.product.productDescription ? this.product.productDescription.BriefDesc : ''
-
-        }
-    },
-    computed:{
-        ...mapStores(useCartStore, useUserStore, useJSONStore)
-    },
-
-    methods: {
-        ...mapActions(useCartStore, ['addToCart']),
-
-        addItem() {
-          this.cartStore.addToCart(this.product)
-            this.quantity++;
-        },
-
-        getMainImg() {
-            if (this.product && this.product.productImages.length > 0) {
-              const mainImgName = this.product.productImages.find(
-                (value)=>{
-                  return value.Main === true;
-                }
-              ).FileNameBase;
-              return new URL('../../../assets/products/'+mainImgName, import.meta.url ).href
-            }
-            return '';
-        },
-
-      getPrice() {
-          if(!this.userStore.isAuthed) {
-            return this.product.productPrice.ConvertedPrice[840]
-          }
-
-          return this.product.productPrice.ConvertedPrice[this.userStore.currencyID]
-      },
-      getPriceCurrencySymbol() {
-        const findCurrency = this.jsonlistStore.currencies.find((item)=>{
-          return item.IsoCode === (this.userStore.currencyID ? parseInt(this.userStore.currencyID) : '840')
-        })
-        return findCurrency?findCurrency.Symbol:'';
+  name: 'ProductCardComp',
+  props: {
+    product: {
+      type: Object,
+      default() {
+        return {}
       }
     }
+  },
+  data() {
+    return {
+      image: this.getMainImg(),
+      disabled: false,
+      desc: this.product.productDescription ? this.product.productDescription.BriefDesc : ''
+
+    }
+  },
+  computed: {
+    ...mapStores(useCartStore, useUserStore, useJSONStore)
+  },
+  methods: {
+    addToCart() {
+      this.cartStore.addItem(this.product, 1)
+    },
+    getMainImg() {
+      if (this.product && this.product.productImages.length > 0) {
+        const mainImgName = this.product.productImages.find(
+          (value) => {
+            return value.Main === true
+          }
+        ).FileNameBase
+        return new URL('../../../assets/products/' + mainImgName, import.meta.url).href
+      }
+      return ''
+    },
+
+    getPrice() {
+      if (!this.userStore.isAuthed) {
+        return this.product.productPrice.ConvertedPrice[840]
+      }
+
+      return this.product.productPrice.ConvertedPrice[this.userStore.currencyID]
+    },
+    getPriceCurrencySymbol() {
+      const findCurrency = this.jsonlistStore.currencies.find((item) => {
+        return item.IsoCode === (this.userStore.currencyID ? parseInt(this.userStore.currencyID) : '840')
+      })
+      return findCurrency ? findCurrency.Symbol : ''
+    }
+  }
 }
 </script>
 
 <style scoped>
 .w-18rem {
-    width: 14rem;
+  width: 14rem;
 }
+
 .height-400px {
   height: 400px;
 }
+
 .border-product-foto {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-    text-align: center;
+  -webkit-appearance: none;
+  margin: 0;
+  text-align: center;
 }
 
 /* Firefox */
 input[type=number] {
-    -moz-appearance: textfield;
-    text-align: center;
+  -moz-appearance: textfield;
+  text-align: center;
 }
 
-input:disabled{
-    background: none;
+input:disabled {
+  background: none;
 }
 
 .table-collapse {
-    border-collapse: separate;
-    border-spacing:0 20px;
+  border-collapse: separate;
+  border-spacing: 0 20px;
 }
 
 .border-input {
-    border-style: solid !important;
-    border-image: linear-gradient(90deg, rgba(220,53,69,1) 0%, rgba(25,135,84,1) 100%) 1 !important;
+  border-style: solid !important;
+  border-image: linear-gradient(90deg, rgba(220, 53, 69, 1) 0%, rgba(25, 135, 84, 1) 100%) 1 !important;
 }
 
 
 .input-width {
-    width: 50% !important;
+  width: 50% !important;
 }
+
 .header-height {
   height: 73px;
 }

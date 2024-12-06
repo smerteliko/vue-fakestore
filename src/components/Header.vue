@@ -14,74 +14,72 @@
           </h3>
         </RouterLink>
       </div>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#collapsibleNavbar"
-      >
-        <span class="navbar-toggler-icon" />
-      </button>
       <div
-        id="collapsibleNavbar"
-        class="collapse navbar-collapse"
-      >
-        <div class="nav-item dropdown align-content-lg-center ms-lg-5">
-          <button
-            id="navbarDropdownMenuLink"
-            class="nav-link dropdown-toggle link-primary"
-            data-toggle="dropdown"
-            data-bs-toggle="dropdown"
-            aria-haspopup="false"
-            aria-expanded="false"
-          >
-            <h3 class="text-lg-center mb-0">
-              <i class="fa-solid fa-book-open" />
-            </h3>
-            <p class="mb-0">
-              <small>Categories</small>
-            </p>
-          </button>
-          <div
-            class="dropdown-menu dropdown-own"
-            aria-labelledby="navbarDropdownMenuLink"
-          >
-            <div
-              v-for="categ in this.categoryStore.getCategoryList"
-              :key="categ.id"
-              class="dropend dropdown-item"
+      class="collapse navbar-collapse" id="collapsibleNavbar">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapsibleNavbar"
+        >
+          <span class="navbar-toggler-icon" />
+        </button>
+          <div class="nav-item dropdown align-content-lg-center ms-lg-5">
+            <button
+              id="navbarDropdownMenuLink"
+              class="nav-link dropdown-toggle link-primary"
+              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
+              aria-haspopup="false"
+              aria-expanded="false"
             >
-              <RouterLink
-                :key="`header-category-`+categ.Name"
-                :to="{name: 'CategoryComp', params:{catID: categ.id}}"
-                type="button"
-                class="dropdown-toggle nav-link "
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
+              <h3 class="text-lg-center mb-0">
+                <i class="fa-solid fa-book-open" />
+              </h3>
+              <p class="mb-0">
+                <small>Categories</small>
+              </p>
+            </button>
+            <div
+              class="dropdown-menu dropdown-own"
+              aria-labelledby="navbarDropdownMenuLink"
+            >
+              <div
+                v-for="categ in this.categoryStore.getCategoryList"
+                :key="categ.id"
+                class="dropend dropdown-item"
               >
-                <h6 class="">
-                  <i  /> {{ categ.Name }}
-                </h6>
-              </RouterLink>
-              <div class="dropdown-menu">
-                <div
-                  v-for="subCat in categ.subCategories"
-                  :key="subCat.id"
-                  class="dropdown-item"
+                <RouterLink
+                  :key="`header-category-`+categ.Name"
+                  :to="{name: 'CategoryComp', params:{catID: categ.id}}"
+                  type="button"
+                  class="dropdown-toggle nav-link "
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
                 >
-                  <RouterLink
-                    :key="`header-category-`+categ.Name+`-subcategory-`+subCat.Name"
-                    :to="{name: 'CategoryCompBySub', params:{catID: categ.id, subID:subCat.id}}"
-                    class="nav-link"
+                  <h6 class="">
+                    <i /> {{ categ.Name }}
+                  </h6>
+                </RouterLink>
+                <div class="dropdown-menu">
+                  <div
+                    v-for="subCat in categ.subCategories"
+                    :key="subCat.id"
+                    class="dropdown-item"
                   >
-                    <h6 class="">
-                      {{ subCat.Name }}
-                    </h6>
-                  </RouterLink>
+                    <RouterLink
+                      :key="`header-category-`+categ.Name+`-subcategory-`+subCat.Name"
+                      :to="{name: 'CategoryCompBySub', params:{catID: categ.id, subID:subCat.id}}"
+                      class="nav-link"
+                    >
+                      <h6 class="">
+                        {{ subCat.Name }}
+                      </h6>
+                    </RouterLink>
+                  </div>
                 </div>
               </div>
-            </div>
           </div>
         </div>
         <div class="nav-item align-content-lg-center  d-lg-flex m-auto me-2">
@@ -98,7 +96,7 @@
             </p>
             <span
               class="position-absolute badge-fs top-0 start-100 translate-middle badge rounded-pill bg-danger"
-              v-text="this.cartStore.getCartTotalItems"
+              v-text="this.cartStore.cartItemsCount"
             />
           </RouterLink>
           <RouterLink
@@ -146,123 +144,128 @@
 
 <script>
 
-import {mapActions, mapStores,} from "pinia";
-import {useCategoryStore} from "@/stores/categoryStore.js";
-import {useCartStore} from "@/stores/cartStore.js";
-import {useUserStore} from "@/stores/userStore.js";
-import {useJSONStore} from "@/stores/jsonStore.js";
+import { mapActions, mapStores } from 'pinia'
+import { useCategoryStore } from '@/stores/categoryStore.js'
+import { useCartStore } from '@/stores/cartStore.js'
+import { useUserStore } from '@/stores/userStore.js'
+import { useJSONStore } from '@/stores/jsonStore.js'
 
 export default {
-    name: 'FakestoreHeader',
-    components:{},
-    data() {
-        return {
-          scrollPosition: null,
-        }
-    },
-    computed: {
-      ...mapStores(
-        useCategoryStore,
-        useCartStore,
-        useUserStore,
-        useJSONStore
-      )
-    },
-    async beforeMount() {
-      await this.fetchCurrencyList();
-      await this.fetchCatList();
-      this.updateCartListFromLS();
-    },
-    mounted() {
-      window.addEventListener('scroll', this.updateScroll);
-    },
-    methods: {
-      ...mapActions(useCategoryStore,["fetchCatList"]),
-      ...mapActions(useCartStore,["updateCartListFromLS"]),
-      ...mapActions(useJSONStore,["fetchCurrencyList"]),
+  name: 'FakestoreHeader',
+  components: {},
+  data() {
+    return {
+      scrollPosition: null
+    }
+  },
+  computed: {
+    ...mapStores(
+      useCategoryStore,
+      useCartStore,
+      useUserStore,
+      useJSONStore
+    )
+  },
+  updated() {
+
+  },
+  async beforeMount() {
+    await this.fetchCurrencyList()
+    await this.fetchCatList()
+    this.cartStore.initializeCart();
+  },
+  mounted() {
+    window.addEventListener('scroll', this.updateScroll)
+  },
+  methods: {
+    ...mapActions(useCategoryStore, ['fetchCatList']),
+    ...mapActions(useJSONStore, ['fetchCurrencyList']),
 
 
-        getIcon(id) {
-            // if(id === 1) {
-            //     return 'fa-solid fa-shirt'
-            // }
-            //
-            // if(id === 2) {
-            //     return 'fa-solid fa-shoe-prints'
-            // }
-            //
-            // if(id === 3) {
-            //     return 'fa-solid fa-ring'
-            // }
-            //
-            // if(id === 4) {
-            //     return 'fa-solid fa-laptop-code'
-            // }
-            //
-            // if(id === 5) {
-            //     return 'fa-solid fa-house-chimney'
-            // }
+    getIcon(id) {
+      // if(id === 1) {
+      //     return 'fa-solid fa-shirt'
+      // }
+      //
+      // if(id === 2) {
+      //     return 'fa-solid fa-shoe-prints'
+      // }
+      //
+      // if(id === 3) {
+      //     return 'fa-solid fa-ring'
+      // }
+      //
+      // if(id === 4) {
+      //     return 'fa-solid fa-laptop-code'
+      // }
+      //
+      // if(id === 5) {
+      //     return 'fa-solid fa-house-chimney'
+      // }
 
-            return ''
-        },
-        getUserAvatar() {
-          const image = this.userStore.getUserImages;
-          return new URL('assets/img/user-avatar/'+image.file.FileName, import.meta.env.VITE_API_HOST ).href
-        },
-        updateScroll() {
-          this.scrollPosition = window.scrollY
-        }
+      return ''
     },
+    getUserAvatar() {
+      const image = this.userStore.getUserImages
+      return new URL('assets/img/user-avatar/' + image.file.FileName, import.meta.env.VITE_API_HOST).href
+    },
+    updateScroll() {
+      this.scrollPosition = window.scrollY
+    }
+  }
 }
 </script>
 
 <style scoped>
 
-  .dropdown-own .dropdown:hover>.dropdown-menu,
-  .dropdown-own .dropend:hover>.dropdown-menu {
-      display: block;
-      margin-top: 0.125em;
-  }
+.dropdown-own .dropdown:hover > .dropdown-menu,
+.dropdown-own .dropend:hover > .dropdown-menu {
+  display: block;
+  margin-top: 0.125em;
+}
 
-  .dropdown-own .dropend:hover > .dropdown-menu {
-      position: absolute;
-      top: 0;
-      left: 100%;
-  }
+.dropdown-own .dropend:hover > .dropdown-menu {
+  position: absolute;
+  top: 0;
+  left: 100%;
+}
 
-  .dropdown-toggle::after{
-    content:none;
-  }
+.dropdown-toggle::after {
+  content: none;
+}
 
-  .dropdown-own .dropdown-toggle::after {
-      content:none;
-  }
+.dropdown-own .dropdown-toggle::after {
+  content: none;
+}
 
-  .dropdown-own .dropdown>.dropdown-toggle:active {
-      /*Without this, clicking will make it sticky*/
-      pointer-events: none;
-  }
+.dropdown-own .dropdown > .dropdown-toggle:active {
+  /*Without this, clicking will make it sticky*/
+  pointer-events: none;
+}
 
 .img-size {
-    width: 57px;
+  width: 57px;
   height: 57px;
-  }
+}
 
-.obj-fit{
+.obj-fit {
   object-fit: cover;
 }
 
-  .badge-fs {
-      font-size: 0.6rem !important;
-  }
+.badge-fs {
+  font-size: 0.6rem !important;
+}
+
 .border-color {
   border: 3px solid;
-  border-color: rgba(13,13,213,1)!important
+  border-color: rgba(13, 13, 213, 1) !important
 }
+
 .container-color.scrolled {
   background-color: whitesmoke;
 }
-.change-color{
+
+.change-color {
   background-color: #b3c6d3 !important;
 }
 </style>

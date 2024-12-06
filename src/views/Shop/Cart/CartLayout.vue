@@ -8,36 +8,37 @@
           </div>
         </div>
         <div
-          v-if="this.cartStore.getCartTotalItems > 0"
+          v-if="this.cartStore.cartItems.length > 0"
           class="col-2 d-flex justify-content-center align-items-center"
         >
           <div class="pe-calc ">
             <button
               class="btn"
-              @click="this.removeFromCart"
+              @click="this.cartStore.removeSelectedItems"
             >
               <i class="fs-x-large icon-color  fa-regular fa-trash-can" />
             </button>
           </div>
           <div class="pe-calc  pe-40px form-check">
             <input
-              v-model="this.checkedAll"
+              v-model="this.cartStore.allSelected"
               class="pe-calc form-check-input"
               type="checkbox"
+              @change="this.toggleSelectAll"
             >
           </div>
         </div>
       </div>
     </div>
     <div
-      v-if="this.cartStore.getCartTotalItems > 0"
+      v-if="this.cartStore.cartItems.length > 0"
       class="row"
     >
       <div class="container col-7">
-        <CartListComp :cart-list="this.cartItemsList" />
+        <CartListComp :cart-list="this.cartStore.cartItems" />
       </div>
       <div class="container col-4">
-        <CartOrderComp :selected-items="this.cartStore.getCheckedCartItems" />
+        <CartOrderComp/>
       </div>
     </div>
     <div
@@ -92,7 +93,7 @@
 import CartListComp from "./CartListComp.vue";
 
 import CartOrderComp from "./CartOrderComp.vue";
-import {mapActions, mapStores} from "pinia";
+import { mapStores} from "pinia";
 import {useCartStore} from "@/stores/cartStore.js";
 import {useUserStore} from "@/stores/userStore.js";
 
@@ -101,56 +102,38 @@ export default {
     components: {CartOrderComp, CartListComp},
     data(){
         return {
-            cartItemsList: [],
-            checkedAll: Boolean
         }
     },
     computed: {
         ...mapStores(useCartStore, useUserStore),
+      cartItems() { return this.cartStore.cartItems; },
+      cartTotal() { return this.cartStore.cartTotal; },
+      errorMessage() { return this.cartStore.getErrorMessage; },
+      allSelected: {
+        get() { return this.cartStore.allSelectedState; },
+        set(value) { this.cartStore.toggleSelectAll(value); },
+      },
+      getCurrencySymbol() { return this.cartStore.getCurrencySymbol; },
     },
-    watch: {
-        checkedAll: {
-             handler(newVal) {
-               this.cartStore.updateCartItemsSelection(newVal)
-            }
-        }
-    },
-    beforeMount() {
-        this.cartStore.updateCartListFromLS();
-        this.cartItemsList = this.cartStore.getCartItems;
-        this.cartStore.updateCartItemsSelection(false)
-
+    mounted() {
     },
 
-    methods:{
-      ...mapActions(useCartStore,[
-        'getCartItems',
-        'getCheckedCartItems',
-        'removeSelectedCartItems',
-        'updateCartListFromLS',
-        'updateCartItemsSelection'
-      ]),
-
+    methods: {
       getCartEmptyText() {
         let rtrnText = 'Please select products ';
-        if( ! this.userStore.isAuthed ) {
-          rtrnText+='or log in if you previously added items to cart';
+        if (!this.userStore.isAuthed) {
+          rtrnText += 'or log in if you previously added items to cart';
         }
 
         return rtrnText;
       },
-
-        removeFromCart() {
-            let indexes = [];
-            this.cartItemsList.forEach((value, key)=>{
-                if(value.checked) {
-                    indexes.push(key);
-                }
-
-            });
-          this.cartStore.removeSelectedCartItems(indexes)
-        }
-    },
+      removeSelectedItems() {
+        this.cartStore.removeSelectedItems();
+      },
+      toggleSelectAll() {
+        this.cartStore.toggleSelectAll();
+      },
+    }
 }
 </script>
 

@@ -23,13 +23,13 @@
       <hr class="hr hr-blurry">
       <div class="row ms-2 me-2 flex-nowrap">
         <div class="col-8">
-          <h6> Products (<span v-text="this.setTotalQuantity()" />)</h6>
+          <h6> Products (<span v-text="this.cartStore.selectedItems.length" />)</h6>
         </div>
         <div class="col-4 text-end">
-          <i v-text="this.setTotalPriceForAll()" />
+          <i v-text="this.cartStore.selectedItemsTotalPrice" />
           <i
             class="ms-1"
-            v-text="this.cartStore.getPriceCurrencySymbol()"
+            v-text="this.cartStore.getCurrencySymbol"
           />
         </div>
       </div>
@@ -65,10 +65,10 @@
             <br>
             <span class="text-decoration-underline">
               <i>Total to pay: </i>
-              <i v-text="setTotalToOrder()" />
+              <i v-text="this.cartStore.selectedItemsTotalPrice" />
               <i
                 class="ms-1"
-                v-text="this.cartStore.getPriceCurrencySymbol()"
+                v-text="this.cartStore.getCurrencySymbol"
               />
             </span>
           </button>
@@ -103,27 +103,7 @@ export default {
       ...mapStores(useCartStore)
     },
     methods: {
-        setTotalQuantity() {
-            let totalQty = 0;
-            this.selectedItems.forEach((value)=>{
-                totalQty+=value.quantity
-            })
-            return totalQty;
-        },
-        setTotalPriceForAll(){
-            let total = 0;
-            this.selectedItems.forEach((value)=>{
 
-                total+=parseFloat(value.totalPrice)
-            })
-            this.total = total.toFixed(2);
-            return total.toFixed(2);
-        },
-
-
-        setTotalToOrder() {
-            return (this.total-this.sale)
-        },
     }
 
 
